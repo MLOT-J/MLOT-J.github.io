@@ -1,0 +1,51 @@
+*{
+    background-color: aliceblue;
+}
+
+header{
+    text-align: center;
+    font-size: 70px;
+}
+
+.main_text{
+    margin-top: 30px;
+    margin-bottom: 40px;
+    font-family: 'Century Gothic';
+}
+
+nav{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+li{
+    border: 1px solid none;
+    border-radius: 5px;
+    background-color: #00a3cc;
+    position: relative;
+    padding-left: 40px;
+    margin-bottom: 5px;
+    height: 50px;
+    width: 30%;
+    font-size: 40px;
+    padding-top: 8px;
+}
+
+li::before{
+    content: counter(item) ". ";
+    counter-increment: item;
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: bold;
+}
+
+ol{
+    counter-reset: item;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
