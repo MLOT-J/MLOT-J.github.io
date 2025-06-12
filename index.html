@@ -14,13 +14,12 @@
         <hr>
     <main>
         <ol id="list">
-            <li>Chleb</li>
+            
         </ol>
     </main>
     <nav>
-        <input type="text" id="item" placeholder="Dodaj przedmiot do listy" required onkeydown="if(event.key === 'Enter') add_to_list()">
-        <button type="submit" onclick="add_to_list()">Dodaj</button>
-    </nav>
-        
+        <input type="text" id="item" placeholder="Dodaj przedmiot do listy" onkeydown="if(event.key==='Enter'){addItem();}">
+        <button onclick="addItem()">Dodaj</button>
+    </nav> 
 </body>
 </html>
