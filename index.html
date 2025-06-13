@@ -8,18 +8,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <p class="main_text">Lista zakupów</p>
-    </header>
-        <hr>
-    <main>
-        <ol id="list">
-            
-        </ol>
-    </main>
-    <nav>
-        <input type="text" id="item" placeholder="Dodaj przedmiot do listy" onkeydown="if(event.key==='Enter'){addItem();}">
-        <button onclick="addItem()">Dodaj</button>
-    </nav> 
+    <div class="main_page">
+        <header>
+            <p class="main_text">Lista zakupów</p>
+        </header>
+        <nav>
+            <input type="text" id="item" placeholder="Dodaj przedmiot do listy" onkeydown="if(event.key==='Enter'){addItem();}">
+            <button onclick="addItem()">Dodaj</button>
+        </nav>
+        <main>
+            <ol id="list">Krowa</ol>
+        </main>
+    </div> 
 </body>
 </html>
