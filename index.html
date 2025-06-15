@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista zakupów</title>
     <script src="script.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=<?=time()?>">
 </head>
 <body>
     <div class="main_page">
@@ -13,11 +13,11 @@
             <p class="main_text">Lista zakupów</p>
         </header>
         <nav>
-            <input type="text" id="item" placeholder="Dodaj przedmiot do listy" onkeydown="if(event.key==='Enter'){addItem();}">
+            <input type="text" id="item" placeholder="Dodaj przedmiot do listy..." onkeydown="if(event.key==='Enter'){addItem();}">
             <button onclick="addItem()">Dodaj</button>
         </nav>
         <main>
-            <ol id="list">Krowa</ol>
+            <ol id="list"></ol>
         </main>
     </div> 
 </body>
