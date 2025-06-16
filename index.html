@@ -6,6 +6,7 @@
     <title>Lista zakupów</title>
     <script src="script.js"></script>
     <link rel="stylesheet" href="style.css?v=<?=time()?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
     <div class="main_page">
@@ -14,10 +15,15 @@
         </header>
         <nav>
             <input type="text" id="item" placeholder="Dodaj przedmiot do listy..." onkeydown="if(event.key==='Enter'){addItem();}">
-            <button onclick="addItem()">Dodaj</button>
+            <button onclick="addItem()" class="add">Dodaj</button>
+            <button class="fas fa-trash"></button>
         </nav>
         <main>
-            <ol id="list"></ol>
+            <ol class="todo-list">
+                <li class="task-item">Kup mleko<button class="fas fa-check"></button> <button class="fas fa-edit"></button></li>
+                <li class="task-item">Napisać raport<button class="fas fa-check"></button> <button class="fas fa-edit"></button></li>
+                <li class="task-item">Pranie<button class="fas fa-check"></button> <button class="fas fa-edit"></button></li>
+            </ol>
         </main>
     </div> 
 </body>
