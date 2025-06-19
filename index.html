@@ -16,15 +16,20 @@
         <nav>
             <input type="text" id="item" placeholder="Dodaj przedmiot do listy..." onkeydown="if(event.key==='Enter'){addItem();}">
             <button onclick="addItem()" class="add">Dodaj</button>
-            <button class="fas fa-trash" id="trash"></button>
+            <button class="fas fa-trash" id="trash" onclick="deleteAllConfirmation()"></button>
         </nav>
         <main>
-            <ol class="todo-list">
-                <li class="task-item">Kup mleko<span><button class="fas fa-check"></button> <button class="fas fa-edit"></button> <button class="fas fa-xmark" id="xmark"></button></span></li>
-                <li class="task-item">Napisać raport<span><button class="fas fa-check"></button> <button class="fas fa-edit"></button> <button class="fas fa-xmark" id="xmark"></button></span></li>
-                <li class="task-item">Pranie<span><button class="fas fa-check"></button> <button class="fas fa-edit"></button> <button class="fas fa-xmark" id="xmark"></button></span></li>
+            <ol class="todo-list" id="list">
             </ol>
         </main>
+        <div class="delete" id="conf">
+            <h1>Czy na pewno chcesz usunąć wszystkie elementy?</h1><br>
+           <span class="spanDelet"><button onclick="deleteAll()">TAK</button><button class="deleteNo" onclick="cancelConfirmationAll()">NIE</button></span>
+        </div>
+        <div class="delete" id="conf2">
+            <h1>Czy na pewno chcesz usunąć ten <br>element?</h1><br>
+           <span class="spanDelet"><button onclick="deleteItem()">TAK</button><button class="deleteNo" onclick="cancelConfirmation()">NIE</button></span>
+        </div>
     </div> 
 </body>
 </html>

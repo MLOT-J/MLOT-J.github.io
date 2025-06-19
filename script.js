@@ -8,20 +8,33 @@ function loadItems(){
             const li = document.createElement("li");
             li.textContent = item.Nazwa;
             li.className = "task-item";
+            li.id = "item-" + item.Id;
+            if (item.Wykreslone == 1) {
+                li.classList.add("checked");
+            }
 
             const btnDelete = document.createElement("button");
             btnDelete.textContent = "";
-            btnDelete.onclick = () => deleteItem(item.Id);
+            btnDelete.onclick = () => deleteItemConfirmation(item.Id);
             btnDelete.className = "fas fa-xmark";
+            btnDelete.id = "xmark";
 
             const btnEdit = document.createElement("button");
             btnEdit.textContent = "";
             btnEdit.onclick = () => editItem(item);
             btnEdit.className = "fas fa-edit";
 
+            const btnCheck = document.createElement("button");
+            btnCheck.textContent = "";
+            btnCheck.onclick = () => checkItem(item.Id, item.Wykreslone);
+            btnCheck.className = "fas fa-check";
 
-            li.appendChild(btnDelete)
-            li.appendChild(btnEdit);
+            const span = document.createElement("span");
+
+            span.appendChild(btnCheck);
+            span.appendChild(btnEdit);
+            span.appendChild(btnDelete);
+            li.appendChild(span);
             list.appendChild(li);
         });
     });
@@ -42,12 +55,32 @@ function addItem() {
     });
 }
 
-function deleteItem(id) {
-    fetch('api.php', {
-        method: 'DELETE',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: `id=${id}`
-    }).then(() => loadItems());
+let itemToDeleteId = null;
+
+function deleteItemConfirmation(id) {
+    itemToDeleteId = id;
+    const confirmation = document.getElementById("conf2");
+    confirmation.style.display = "flex";
+}
+
+function deleteItem() {
+    if(itemToDeleteId !== null){
+        fetch('api.php', {
+            method: 'DELETE',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `id=${itemToDeleteId}`
+        }).then(() => loadItems());
+        itemToDeleteId = null;
+    }
+    
+    const confirmation = document.getElementById("conf2");
+    confirmation.style.display = "none";
+}
+
+function cancelConfirmation(){
+    const confirmation = document.getElementById("conf2");
+    confirmation.style.display = "none";
+    itemToDeleteId = null;
 }
 
 function editItem(item) {
@@ -59,6 +92,35 @@ function editItem(item) {
             body: `id=${item.Id}&item=${encodeURIComponent(newName)}`
         }).then(() => loadItems());
     }
+}
+
+function checkItem(id, currentChecked){
+    const newChecked = currentChecked == 1 ? 0 : 1;
+    fetch('api.php', {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `id=${id}&Wykreslone=${newChecked}`
+    }).then(() => loadItems());
+}
+
+function deleteAllConfirmation() {
+    const confirmation = document.getElementById("conf");
+    confirmation.style.display = "flex";
+}
+
+function deleteAll() {
+    fetch('api.php', {
+        method: 'DELETE',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'all=1'
+    }).then(() => loadItems());
+    const confirmation = document.getElementById("conf");
+    confirmation.style.display = "none";
+}
+
+function cancelConfirmationAll(){
+    const confirmation = document.getElementById("conf");
+    confirmation.style.display = "none";
 }
 
 window.onload = loadItems;

@@ -156,3 +156,42 @@ button:hover {
     transform: scale(1.1);
 }
 
+.checked{
+    text-decoration: line-through;
+    color: #888;
+}
+
+.delete{
+    position: fixed;
+    top: 23%;
+    left: 32.5%;
+    height: 30%;
+    width: 35%;
+    background-color: #f4f1ec;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    flex-direction: column;
+}
+
+.spanDelet{
+    display: flex;
+    gap: 20px;
+}
+
+.spanDelet button{
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.deleteNo:hover{
+    border-color: #da0000;
+    color: #da0000;
+    transform: scale(1.1);
+}
