@@ -7,14 +7,17 @@ function loadItems(){
         items.forEach(item => {
             const li = document.createElement("li");
             li.textContent = item.Nazwa;
+            li.className = "task-item";
 
             const btnDelete = document.createElement("button");
-            btnDelete.textContent = "Usuń";
+            btnDelete.textContent = "";
             btnDelete.onclick = () => deleteItem(item.Id);
+            btnDelete.className = "fas fa-xmark";
 
             const btnEdit = document.createElement("button");
-            btnEdit.textContent = "Edytuj";
+            btnEdit.textContent = "";
             btnEdit.onclick = () => editItem(item);
+            btnEdit.className = "fas fa-edit";
 
 
             li.appendChild(btnDelete)

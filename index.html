@@ -16,13 +16,13 @@
         <nav>
             <input type="text" id="item" placeholder="Dodaj przedmiot do listy..." onkeydown="if(event.key==='Enter'){addItem();}">
             <button onclick="addItem()" class="add">Dodaj</button>
-            <button class="fas fa-trash"></button>
+            <button class="fas fa-trash" id="trash"></button>
         </nav>
         <main>
             <ol class="todo-list">
-                <li class="task-item">Kup mleko<button class="fas fa-check"></button> <button class="fas fa-edit"></button></li>
-                <li class="task-item">Napisać raport<button class="fas fa-check"></button> <button class="fas fa-edit"></button></li>
-                <li class="task-item">Pranie<button class="fas fa-check"></button> <button class="fas fa-edit"></button></li>
+                <li class="task-item">Kup mleko<span><button class="fas fa-check"></button> <button class="fas fa-edit"></button> <button class="fas fa-xmark" id="xmark"></button></span></li>
+                <li class="task-item">Napisać raport<span><button class="fas fa-check"></button> <button class="fas fa-edit"></button> <button class="fas fa-xmark" id="xmark"></button></span></li>
+                <li class="task-item">Pranie<span><button class="fas fa-check"></button> <button class="fas fa-edit"></button> <button class="fas fa-xmark" id="xmark"></button></span></li>
             </ol>
         </main>
     </div> 
