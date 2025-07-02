@@ -6,12 +6,16 @@ function loadItems(){
         list.innerHTML = "";
         items.forEach(item => {
             const li = document.createElement("li");
-            li.textContent = item.Nazwa;
             li.className = "task-item";
             li.id = "item-" + item.Id;
             if (item.Wykreslone == 1) {
                 li.classList.add("checked");
             }
+
+            // Tworzymy osobny span na tekst
+            const textSpan = document.createElement("span");
+            textSpan.textContent = item.Nazwa;
+            textSpan.className = "item-text";
 
             const btnDelete = document.createElement("button");
             btnDelete.textContent = "";
@@ -29,12 +33,14 @@ function loadItems(){
             btnCheck.onclick = () => checkItem(item.Id, item.Wykreslone);
             btnCheck.className = "fas fa-check";
 
-            const span = document.createElement("span");
+            const actionsSpan = document.createElement("span");
+            actionsSpan.className = "actions";
+            actionsSpan.appendChild(btnCheck);
+            actionsSpan.appendChild(btnEdit);
+            actionsSpan.appendChild(btnDelete);
 
-            span.appendChild(btnCheck);
-            span.appendChild(btnEdit);
-            span.appendChild(btnDelete);
-            li.appendChild(span);
+            li.appendChild(textSpan);
+            li.appendChild(actionsSpan);
             list.appendChild(li);
         });
     });
@@ -84,14 +90,89 @@ function cancelConfirmation(){
 }
 
 function editItem(item) {
-    const newName = prompt("Edytuj nazwę:", item.Nazwa);
-    if (newName) {
-        fetch('api.php', {
-            method: 'PUT',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: `id=${item.Id}&item=${encodeURIComponent(newName)}`
-        }).then(() => loadItems());
+    document.body.classList.add("editing-active");
+
+    const li = document.getElementById("item-" + item.Id);
+    li.classList.add("editing");
+
+    const textSpan = li.querySelector(".item-text");
+    const actionsSpan = li.querySelector(".actions");
+    textSpan.style.display = "none";
+    actionsSpan.style.display = "none";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = item.Nazwa;
+    input.className = "edit-input";
+    li.insertBefore(input, textSpan);
+
+    const editButtons = document.createElement("span");
+    editButtons.className = "edit-actions";
+
+    const saveBtn = document.createElement("button");
+    saveBtn.id = "save-edit";
+    saveBtn.className = "fas fa-check";
+    saveBtn.onclick = finishEdit;
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.id = "cancel-edit";
+    cancelBtn.className = "fas fa-xmark";
+    cancelBtn.onclick = () => {
+        removeOutsideClick();
+        endEditMode();
+        loadItems();
+    };
+
+    editButtons.appendChild(saveBtn);
+    editButtons.appendChild(cancelBtn);
+    li.insertBefore(editButtons, actionsSpan);
+
+    input.focus();
+
+    function finishEdit() {
+        removeOutsideClick();
+        endEditMode();
+        const newName = input.value.trim();
+        if (newName && newName !== item.Nazwa) {
+            fetch('api.php', {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: `id=${item.Id}&item=${encodeURIComponent(newName)}`
+            }).then(() => loadItems());
+        } else {
+            loadItems();
+        }
     }
+
+    input.addEventListener("keydown", function(e){
+        if(e.key === "Enter") finishEdit();
+        if(e.key === "Escape") {
+            removeOutsideClick();
+            endEditMode();
+            loadItems();
+        }
+    });
+
+    function handleOutsideClick(e) {
+        if (!li.contains(e.target)) {
+            removeOutsideClick();
+            endEditMode();
+            loadItems();
+        }
+    }
+
+    function removeOutsideClick() {
+        document.removeEventListener("mousedown", handleOutsideClick);
+    }
+
+    function endEditMode() {
+        document.body.classList.remove("editing-active");
+        li.classList.remove("editing");
+    }
+
+    setTimeout(() => {
+        document.addEventListener("mousedown", handleOutsideClick);
+    }, 0);
 }
 
 function checkItem(id, currentChecked){
