@@ -157,8 +157,34 @@ button:hover {
 }
 
 .checked{
-    text-decoration: line-through;
     color: #888;
+    transition: color 0.3s;
+}
+
+.checked .item-text{
+    text-decoration: line-through;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 120px;
+    min-width: 120px;
+    gap: 0;
+}
+
+.checked .actions button:not(.fa-check) {
+    display: none !important;
+}
+
+.checked .actions .fa-check {
+    margin: 0 auto;
+    text-decoration: none !important;
+}
+
+.checked .actions button {
+    text-decoration: none !important;
 }
 
 .delete{
@@ -194,6 +220,22 @@ button:hover {
     border-color: #da0000;
     color: #da0000;
     transform: scale(1.1);
+}
+
+.edit-input {
+    font-size: 1.1rem;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 2px solid #00cfc1;
+    outline: none;
+    width: 85%;
+    background: #fafdff;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0,207,193,0.08);
+    transition: 
+        border-color 0.3s,
+        box-shadow 0.3s,
+        background 0.3s;
 }
 
 .edit-input:focus {
@@ -280,4 +322,139 @@ button:hover {
 .editing-active .task-item:hover {
     background-color: inherit !important;
     cursor: default !important;
+}
+
+@media (max-width: 600px) {
+    .main_page {
+        max-width: 100vw;
+        margin: 20px 0;
+        padding: 10px;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    header {
+        font-size: 32px;
+    }
+
+    .todo-list {
+        width: 100%;
+    }
+
+    .task-item {
+        width: 100%;
+        font-size: 16px;
+        padding: 12px 8px;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+        justify-content: center;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        font-size: 16px;
+        padding: 10px 8px;
+    }
+
+    button, .task-item button {
+        font-size: 16px;
+        padding: 10px 12px;
+    }
+
+    .edit-actions {
+        height: auto;
+        gap: 8px;
+    }
+
+    #save-edit, #cancel-edit {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+    }
+
+    .delete {
+        width: 90vw;
+        left: 5vw;
+        top: 20%;
+        padding: 10px;
+    }
+
+    .task-item .item-text {
+        width: 100%;
+        text-align: center;
+    }
+
+    .checked .actions {
+        justify-content: space-between;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        position: relative;
+        min-height: 40px;
+        padding: 0 10px;
+    }
+
+    .checked .actions .fa-check {
+        order: 2;
+        position: static;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 32px;
+        flex-shrink: 0;
+    }
+
+    
+    .checked .task-item {
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .actions {
+        position: relative;
+        justify-content: center;
+        min-height: 40px;
+    }
+    
+    .task-item .actions {
+        width: 100%;
+        justify-content: space-between;
+        display: flex;
+        align-items: center;
+        position: relative;
+        padding: 0 10px;
+    }
+    
+    .task-item:not(.checked) .actions .fa-check {
+        order: 2;
+    }
+    
+    .task-item:not(.checked) .actions .fa-edit {
+        order: 2;
+    }
+    
+    .task-item:not(.checked) .actions .fa-xmark {
+        order: 3;
+    }
+    
+    .task-item .actions button {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        position: static;
+    }
 }
