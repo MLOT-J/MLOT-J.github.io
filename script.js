@@ -43,7 +43,42 @@ function loadItems(){
             li.appendChild(actionsSpan);
             list.appendChild(li);
         });
+        
+        // Aktualizuj zaokrąglone rogi dla nieskreślonych elementów
+        updateRoundedCorners();
     });
+}
+
+function updateRoundedCorners() {
+    const allItems = document.querySelectorAll('.task-item');
+    const uncheckedItems = document.querySelectorAll('.task-item:not(.checked)');
+    
+    // Usuń wszystkie klasy zaokrąglenia
+    allItems.forEach(item => {
+        item.classList.remove('first-unchecked', 'last-unchecked', 'before-last-unchecked', 'after-first-unchecked');
+    });
+    
+    if (uncheckedItems.length > 0) {
+        // Pierwszy nieskreślony element
+        const firstUnchecked = uncheckedItems[0];
+        firstUnchecked.classList.add('first-unchecked');
+        
+        // Ostatni nieskreślony element
+        const lastUnchecked = uncheckedItems[uncheckedItems.length - 1];
+        lastUnchecked.classList.add('last-unchecked');
+        
+        // Element przed ostatnim nieskreślonym (żeby ukryć dolną linię)
+        const beforeLastUnchecked = lastUnchecked.previousElementSibling;
+        if (beforeLastUnchecked && beforeLastUnchecked.classList.contains('checked')) {
+            beforeLastUnchecked.classList.add('before-last-unchecked');
+        }
+        
+        // Element po pierwszym nieskreślonym (żeby dodać górną linię)
+        const afterFirstUnchecked = firstUnchecked.nextElementSibling;
+        if (afterFirstUnchecked && afterFirstUnchecked.classList.contains('checked')) {
+            afterFirstUnchecked.classList.add('after-first-unchecked');
+        }
+    }
 }
 
 function addItem() {
@@ -54,7 +89,7 @@ function addItem() {
     fetch('api.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: `item=${encodeURIComponent(itemName)}`
+        body: `action=add&item=${encodeURIComponent(itemName)}`
     }).then(() => {
         input.value = '';
         loadItems();
@@ -72,9 +107,9 @@ function deleteItemConfirmation(id) {
 function deleteItem() {
     if(itemToDeleteId !== null){
         fetch('api.php', {
-            method: 'DELETE',
+            method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: `id=${itemToDeleteId}`
+            body: `action=delete&id=${itemToDeleteId}`
         }).then(() => loadItems());
         itemToDeleteId = null;
     }
@@ -135,9 +170,9 @@ function editItem(item) {
         const newName = input.value.trim();
         if (newName && newName !== item.Nazwa) {
             fetch('api.php', {
-                method: 'PUT',
+                method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                body: `id=${item.Id}&item=${encodeURIComponent(newName)}`
+                body: `action=edit&id=${item.Id}&item=${encodeURIComponent(newName)}`
             }).then(() => loadItems());
         } else {
             loadItems();
@@ -178,9 +213,9 @@ function editItem(item) {
 function checkItem(id, currentChecked){
     const newChecked = currentChecked == 1 ? 0 : 1;
     fetch('api.php', {
-        method: 'PATCH',
+        method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: `id=${id}&Wykreslone=${newChecked}`
+        body: `action=toggle_check&id=${id}&Wykreslone=${newChecked}`
     }).then(() => loadItems());
 }
 
@@ -191,9 +226,9 @@ function deleteAllConfirmation() {
 
 function deleteAll() {
     fetch('api.php', {
-        method: 'DELETE',
+        method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'all=1'
+        body: 'action=delete_all'
     }).then(() => loadItems());
     const confirmation = document.getElementById("conf");
     confirmation.style.display = "none";

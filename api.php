@@ -1,63 +1,83 @@
 <?php
-    $polaczenie = mysqli_connect("localhost", "root", "", "lista");
-
-    if (!$polaczenie) {
-        die("Connection failed: " . mysqli_connect_error());
-    }
+    require_once 'config.php';
+    
+    // Ustawienie nagłówków
+    header('Content-Type: application/json');
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST');
+    header('Access-Control-Allow-Headers: Content-Type');
+    
+    $polaczenie = getConnection();
 
     if($_SERVER['REQUEST_METHOD'] === 'POST'){
-        $item = mysqli_real_escape_string($polaczenie, $_POST['item']);
-        $zapytanie = "INSERT INTO `rzeczy`(`Nazwa`, `Data_dodania`) VALUES ('$item', NOW())";
-        mysqli_query($polaczenie, $zapytanie);
-        echo json_encode(['success' => true]);
+        $action = $_POST['action'] ?? 'add';
+        
+        switch($action) {
+            case 'add':
+                $item = mysqli_real_escape_string($polaczenie, $_POST['item']);
+                $zapytanie = "INSERT INTO `rzeczy`(`Nazwa`, `Data_dodania`) VALUES ('$item', NOW())";
+                if(mysqli_query($polaczenie, $zapytanie)) {
+                    echo json_encode(['success' => true]);
+                } else {
+                    echo json_encode(['success' => false, 'error' => mysqli_error($polaczenie)]);
+                }
+                break;
+                
+            case 'delete':
+                $id = intval($_POST['id']);
+                $zapytanie = "DELETE FROM rzeczy WHERE Id = $id";
+                if(mysqli_query($polaczenie, $zapytanie)) {
+                    echo json_encode(['success' => true]);
+                } else {
+                    echo json_encode(['success' => false, 'error' => mysqli_error($polaczenie)]);
+                }
+                break;
+                
+            case 'delete_all':
+                $zapytanie = "DELETE FROM rzeczy";
+                if(mysqli_query($polaczenie, $zapytanie)) {
+                    echo json_encode(['success' => true, 'all_deleted' => true]);
+                } else {
+                    echo json_encode(['success' => false, 'error' => mysqli_error($polaczenie)]);
+                }
+                break;
+                
+            case 'edit':
+                $id = intval($_POST['id']);
+                $item = mysqli_real_escape_string($polaczenie, $_POST['item']);
+                $zapytanie = "UPDATE rzeczy SET Nazwa = '$item' WHERE Id = $id";
+                if(mysqli_query($polaczenie, $zapytanie)) {
+                    echo json_encode(['success' => true]);
+                } else {
+                    echo json_encode(['success' => false, 'error' => mysqli_error($polaczenie)]);
+                }
+                break;
+                
+            case 'toggle_check':
+                $id = intval($_POST['id']);
+                $checked = intval($_POST['Wykreslone']);
+                $zapytanie = "UPDATE rzeczy SET Wykreslone = $checked WHERE Id = $id";
+                if(mysqli_query($polaczenie, $zapytanie)) {
+                    echo json_encode(['success' => true]);
+                } else {
+                    echo json_encode(['success' => false, 'error' => mysqli_error($polaczenie)]);
+                }
+                break;
+                
+            default:
+                echo json_encode(['success' => false, 'error' => 'Unknown action']);
+        }
         exit;
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-        $zapytanie2 = "SELECT * FROM rzeczy ORDER BY id";
+        $zapytanie2 = "SELECT * FROM rzeczy ORDER BY id DESC";
         $wynik = mysqli_query($polaczenie, $zapytanie2);
         $items = [];
         while ($wiersz = mysqli_fetch_assoc($wynik)) {
             $items[] = $wiersz;
         }
         echo json_encode($items);
-        exit;
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-        parse_str(file_get_contents("php://input"), $data);
-
-        if(isset($data['all']) && $data['all'] == 1){
-            $zapytanie3 = "DELETE FROM rzeczy";
-            mysqli_query($polaczenie, $zapytanie3);
-            echo json_encode(['success' => true, 'all_deleted' => true]);
-            exit;
-        }
-
-        $id = intval($data['id']);
-        $zapytanie4 = "DELETE FROM rzeczy WHERE Id = $id";
-        mysqli_query($polaczenie, $zapytanie4);
-        echo json_encode(['success' => true]);
-        exit;
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
-        parse_str(file_get_contents("php://input"), $data);
-        $id = intval($data['id']);
-        $item = mysqli_real_escape_string($polaczenie, $data['item']);
-        $zapytanie5 = "UPDATE rzeczy SET Nazwa = '$item' WHERE Id = $id";
-        mysqli_query($polaczenie, $zapytanie5);
-        echo json_encode(['success' => true]);
-        exit;
-    }
-
-    if($_SERVER['REQUEST_METHOD'] === 'PATCH') {
-        parse_str(file_get_contents("php://input"), $data);
-        $id = intval($data['id']);
-        $checked = intval($data['Wykreslone']);
-        $zapytanie6 = "UPDATE rzeczy SET Wykreslone = $checked WHERE Id = $id";
-        mysqli_query($polaczenie, $zapytanie6);
-        echo json_encode(['success' => true]);
         exit;
     }
 
