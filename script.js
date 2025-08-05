@@ -12,7 +12,6 @@ function loadItems(){
                 li.classList.add("checked");
             }
 
-            // Tworzymy osobny span na tekst
             const textSpan = document.createElement("span");
             textSpan.textContent = item.Nazwa;
             textSpan.className = "item-text";
@@ -44,7 +43,6 @@ function loadItems(){
             list.appendChild(li);
         });
         
-        // Aktualizuj zaokrąglone rogi dla nieskreślonych elementów
         updateRoundedCorners();
     });
 }
@@ -53,13 +51,11 @@ function updateRoundedCorners() {
     const allItems = document.querySelectorAll('.task-item');
     const uncheckedItems = document.querySelectorAll('.task-item:not(.checked)');
     
-    // Usuń wszystkie klasy zaokrąglenia
     allItems.forEach(item => {
         item.classList.remove('first-unchecked', 'last-unchecked', 'before-last-unchecked', 'after-first-unchecked');
     });
     
     if (uncheckedItems.length > 0) {
-        // Pierwszy nieskreślony element
         const firstUnchecked = uncheckedItems[0];
         firstUnchecked.classList.add('first-unchecked');
         
@@ -67,13 +63,11 @@ function updateRoundedCorners() {
         const lastUnchecked = uncheckedItems[uncheckedItems.length - 1];
         lastUnchecked.classList.add('last-unchecked');
         
-        // Element przed ostatnim nieskreślonym (żeby ukryć dolną linię)
         const beforeLastUnchecked = lastUnchecked.previousElementSibling;
         if (beforeLastUnchecked && beforeLastUnchecked.classList.contains('checked')) {
             beforeLastUnchecked.classList.add('before-last-unchecked');
         }
         
-        // Element po pierwszym nieskreślonym (żeby dodać górną linię)
         const afterFirstUnchecked = firstUnchecked.nextElementSibling;
         if (afterFirstUnchecked && afterFirstUnchecked.classList.contains('checked')) {
             afterFirstUnchecked.classList.add('after-first-unchecked');
@@ -83,15 +77,25 @@ function updateRoundedCorners() {
 
 function addItem() {
     const input = document.getElementById('item');
+    const select = document.querySelector('select');
     const itemName = input.value.trim();
     if (!itemName) return;
+
+    // Pobierz wybraną kategorię
+    const selectedOption = select.querySelector('option.active') || select.querySelector('option:checked');
+    const kategoria = selectedOption ? selectedOption.value : 'Inne';
 
     fetch('api.php', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: `action=add&item=${encodeURIComponent(itemName)}`
+        body: `action=add&item=${encodeURIComponent(itemName)}&kategoria=${encodeURIComponent(kategoria)}`
     }).then(() => {
         input.value = '';
+        // Wyczyść zaznaczenie w select
+        select.querySelectorAll('option').forEach(option => {
+            option.selected = false;
+            option.classList.remove('active');
+        });
         loadItems();
     });
 }
@@ -239,4 +243,83 @@ function cancelConfirmationAll(){
     confirmation.style.display = "none";
 }
 
-window.onload = loadItems;
+function initializeSelect() {
+    const select = document.querySelector('select');
+    const input = document.getElementById('item');
+    
+    if (select && input) {
+        // Automatycznie zaznacz pierwszy element przy inicjalizacji
+        const firstOption = select.querySelector('option:first-child');
+        if (firstOption) {
+            firstOption.classList.add('active');
+            firstOption.selected = true;
+        }
+        
+        // Obsługa kliknięć w opcje selecta
+        select.addEventListener('mousedown', function(e) {
+            if (e.target.tagName === 'OPTION') {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Usuń klasę active ze wszystkich opcji
+                for (let option of select.options) {
+                    option.selected = false;
+                    option.classList.remove('active');
+                }
+                
+                // Zaznacz tylko klikniętą opcję
+                e.target.selected = true;
+                e.target.classList.add('active');
+                
+                // Utrzymaj focus na input i select otwartym
+                setTimeout(() => {
+                    input.focus();
+                    select.style.display = 'block';
+                    select.style.opacity = '1';
+                    select.style.transform = 'translateY(0)';
+                }, 10);
+                
+                return false;
+            }
+        });
+        
+        // Zapobiegaj zamykaniu selecta przy kliknięciu
+        select.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+        
+        // Pokaż select gdy input otrzyma focus
+        input.addEventListener('focus', function() {
+            select.style.display = 'block';
+            select.style.opacity = '1';
+            select.style.transform = 'translateY(0)';
+        });
+        
+        // Ukryj select przy kliknięciu poza kontenerem
+        document.addEventListener('click', function(e) {
+            const container = input.parentElement;
+            if (container && !container.contains(e.target)) {
+                select.style.display = 'none';
+                select.style.opacity = '0';
+                select.style.transform = 'translateY(-5px)';
+                input.blur();
+            }
+        });
+        
+        // Ukryj select przy naciśnięciu Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                select.style.display = 'none';
+                select.style.opacity = '0';
+                select.style.transform = 'translateY(-5px)';
+                input.blur();
+            }
+        });
+    }
+}
+
+window.onload = function() {
+    loadItems();
+    initializeSelect();
+};

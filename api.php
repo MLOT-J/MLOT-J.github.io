@@ -15,7 +15,8 @@
         switch($action) {
             case 'add':
                 $item = mysqli_real_escape_string($polaczenie, $_POST['item']);
-                $zapytanie = "INSERT INTO `rzeczy`(`Nazwa`, `Data_dodania`) VALUES ('$item', NOW())";
+                $kategoria = isset($_POST['kategoria']) ? mysqli_real_escape_string($polaczenie, $_POST['kategoria']) : 'Inne';
+                $zapytanie = "INSERT INTO `rzeczy`(`Nazwa`, `Kategoria`, `Data_dodania`) VALUES ('$item', '$kategoria', NOW())";
                 if(mysqli_query($polaczenie, $zapytanie)) {
                     echo json_encode(['success' => true]);
                 } else {

@@ -14,7 +14,23 @@
             <p class="main_text">Lista zakupów</p>
         </header>
         <nav>
-            <input type="text" id="item" placeholder="Dodaj przedmiot do listy..." onkeydown="if(event.key==='Enter'){addItem();}">
+            <div class="input&select">
+                <input type="text" id="item" placeholder="Dodaj przedmiot do listy..." onkeydown="if(event.key==='Enter'){addItem();}">
+                <select size="12">
+                    <option value="Warzywa/Owoce">Warzywa/Owoce</option>
+                    <option value="Mięso">Mięso</option>
+                    <option value="Nabiał">Nabiał</option>
+                    <option value="Pieczywo">Pieczywo</option>
+                    <option value="Produkty sypkie">Produkty sypkie</option>
+                    <option value="Mrożonki">Mrożonki</option>
+                    <option value="Słodycze/Przekąski">Słodycze/Przekąski</option>
+                    <option value="Napoje">Napoje</option>
+                    <option value="Przyprawy">Przyprawy</option>
+                    <option value="Dla kropki">Dla kropki</option>
+                    <option value="Chemia i Higiena">Chemia i Higiena</option>
+                    <option value="Inne">Inne</option>
+                </select>
+            </div>
             <button onclick="addItem()" class="add">Dodaj</button>
             <button class="fas fa-trash" id="trash" onclick="deleteAllConfirmation()"></button>
         </nav>

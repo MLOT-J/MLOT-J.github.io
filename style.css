@@ -56,6 +56,7 @@ nav {
     margin-bottom: 30px;
     flex-wrap: wrap;
     justify-content: center;
+    position: relative; /* Dodaj to */
 }
 
 input[type="text"] {
@@ -72,6 +73,114 @@ input[type="text"]:focus {
     border-color: #00cfc1;
     box-shadow: 0 0 0 2px #d6d4fa;
     outline: none;
+}
+
+/* Dodaj podświetlenie select gdy input jest w focus */
+input[type="text"]:focus + select {
+    border-color: #00cfc1;
+    box-shadow: 0 0 0 2px #d6d4fa;
+    display: block !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Dodaj podświetlenie gdy select jest w focus */
+select:focus {
+    border-color: #00cfc1;
+    box-shadow: 0 0 0 2px #d6d4fa;
+    display: block !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Dodaj podświetlenie input gdy select jest w focus */
+select:focus + input[type="text"],
+select:focus ~ input[type="text"] {
+    border-color: #00cfc1;
+    box-shadow: 0 0 0 2px #d6d4fa;
+    border-radius: 15px 15px 0 0;
+    border-bottom: none;
+}
+
+select {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    padding: 12px 20px;
+    border: 2px solid #dddddd;
+    border-radius: 0 0 15px 15px;
+    border-top: none;
+    font-size: 18px;
+    background: #f4f1ec;
+    transition: 0.3s;
+    width: 300px;
+    color: #808080;
+    cursor: pointer;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: none;
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    display: none;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    overflow: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+/* Zapobieganie zamykaniu selecta */
+select option {
+    padding: 8px 12px;
+    cursor: pointer;
+    background: #f4f1ec;
+    color: #333;
+    border: none;
+    outline: none;
+    pointer-events: auto;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+select option:hover {
+    background: #e8f5e8;
+}
+
+select option:checked,
+select option:selected {
+    background: #00cfc1;
+    color: white;
+    font-weight: bold;
+}
+
+select option.active {
+    background: #00cfc1;
+    color: white;
+    font-weight: bold;
+}
+
+/* Dodatkowe style dla utrzymania selecta otwartego */
+select:not([size]):not([multiple]) {
+    size: auto;
+}
+
+select[data-keep-open="true"] {
+    display: block !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Dodaj podświetlenie input gdy select jest w focus */
+select:focus ~ input[type="text"],
+.input\&select:focus-within input[type="text"] {
+    border-color: #00cfc1;
+    box-shadow: 0 0 0 2px #d6d4fa;
+    border-radius: 15px 15px 0 0;
+    border-bottom: none;
 }
 
 button {
@@ -411,6 +520,7 @@ button:hover {
         flex-direction: column;
         gap: 8px;
         align-items: stretch;
+        position: relative; /* Dodaj to także w mobile */
     }
 
     input[type="text"] {
@@ -550,4 +660,32 @@ button:hover {
         flex-shrink: 0;
         position: static;
     }
+
+    /* Dodaj podświetlenie select gdy input jest w focus na mobile */
+    input[type="text"]:focus + select {
+        border-color: #00cfc1;
+        box-shadow: 0 0 0 2px #d6d4fa;
+        display: block !important;
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    /* Dodaj podświetlenie gdy select jest w focus na mobile */
+    select:focus {
+        border-color: #00cfc1;
+        box-shadow: 0 0 0 2px #d6d4fa;
+        display: block !important;
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    /* Dodaj podświetlenie input gdy select jest w focus na mobile */
+    select:focus + input[type="text"],
+    select:focus ~ input[type="text"] {
+        border-color: #00cfc1;
+        box-shadow: 0 0 0 2px #d6d4fa;
+        border-radius: 15px 15px 0 0;
+        border-bottom: none;
+    }
+
 }
