@@ -16,16 +16,17 @@
         <nav>
             <div class="input&select">
                 <input type="text" id="item" placeholder="Dodaj przedmiot do listy..." onkeydown="if(event.key==='Enter'){addItem();}">
-                <select size="12">
+                <select size="13">
                     <option value="Warzywa/Owoce">Warzywa/Owoce</option>
-                    <option value="Mięso">Mięso</option>
-                    <option value="Nabiał">Nabiał</option>
-                    <option value="Pieczywo">Pieczywo</option>
+                    <option value="Przyprawy">Przyprawy</option>
+                    <option value="Przetwory/Konserwy">Przetwory/Konserwy</option>
                     <option value="Produkty sypkie">Produkty sypkie</option>
-                    <option value="Mrożonki">Mrożonki</option>
                     <option value="Słodycze/Przekąski">Słodycze/Przekąski</option>
                     <option value="Napoje">Napoje</option>
-                    <option value="Przyprawy">Przyprawy</option>
+                    <option value="Pieczywo">Pieczywo</option>
+                    <option value="Mięso">Mięso</option>
+                    <option value="Nabiał">Nabiał</option>
+                    <option value="Mrożonki">Mrożonki</option>
                     <option value="Dla kropki">Dla kropki</option>
                     <option value="Chemia i Higiena">Chemia i Higiena</option>
                     <option value="Inne">Inne</option>
@@ -35,8 +36,8 @@
             <button class="fas fa-trash" id="trash" onclick="deleteAllConfirmation()"></button>
         </nav>
         <main>
-            <ol class="todo-list" id="list">
-            </ol>
+            <div id="categories-container">
+            </div>
         </main>
         <div class="delete" id="conf">
             <h1>Czy na pewno chcesz usunąć wszystkie elementy?</h1><br>

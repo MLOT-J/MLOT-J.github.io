@@ -2,45 +2,92 @@ function loadItems(){
     fetch('api.php')
     .then(res => res.json())
     .then(items => {
-        const list = document.getElementById("list");
-        list.innerHTML = "";
+        const container = document.getElementById("categories-container");
+        container.innerHTML = "";
+        
+        const categories = {};
         items.forEach(item => {
-            const li = document.createElement("li");
-            li.className = "task-item";
-            li.id = "item-" + item.Id;
-            if (item.Wykreslone == 1) {
-                li.classList.add("checked");
+            const kategoria = item.Kategoria || 'Inne';
+            if (!categories[kategoria]) {
+                categories[kategoria] = [];
             }
+            categories[kategoria].push(item);
+        });
+        
+        const selectElement = document.querySelector('select');
+        const categoryOrder = [];
+        if (selectElement) {
+            for (let i = 0; i < selectElement.options.length; i++) {
+                categoryOrder.push(selectElement.options[i].value);
+            }
+        }
+        
+        const sortedCategories = Object.keys(categories).sort((a, b) => {
+            const indexA = categoryOrder.indexOf(a);
+            const indexB = categoryOrder.indexOf(b);
+            
+            if (indexA === -1) return 1;
+            if (indexB === -1) return -1;
+            
+            return indexA - indexB;
+        });
+        
+        sortedCategories.forEach(categoryName => {
+            const categoryItems = categories[categoryName];
+            
+            const categoryDiv = document.createElement("div");
+            categoryDiv.className = "category-section";
+            
+            const categoryHeader = document.createElement("h2");
+            categoryHeader.textContent = categoryName;
+            categoryHeader.className = "category-header";
+            categoryDiv.appendChild(categoryHeader);
+            
+            const categoryList = document.createElement("ol");
+            categoryList.className = "todo-list category-list";
+            categoryList.id = "list-" + categoryName.replace(/[^a-zA-Z0-9]/g, '-');
+            
+            categoryItems.forEach(item => {
+                const li = document.createElement("li");
+                li.className = "task-item";
+                li.id = "item-" + item.Id;
+                if (item.Wykreslone == 1) {
+                    li.classList.add("checked");
+                }
 
-            const textSpan = document.createElement("span");
-            textSpan.textContent = item.Nazwa;
-            textSpan.className = "item-text";
+                const textSpan = document.createElement("span");
+                textSpan.textContent = item.Nazwa;
+                textSpan.className = "item-text";
 
-            const btnDelete = document.createElement("button");
-            btnDelete.textContent = "";
-            btnDelete.onclick = () => deleteItemConfirmation(item.Id);
-            btnDelete.className = "fas fa-xmark";
-            btnDelete.id = "xmark";
+                const btnDelete = document.createElement("button");
+                btnDelete.textContent = "";
+                btnDelete.onclick = () => deleteItemConfirmation(item.Id);
+                btnDelete.className = "fas fa-xmark";
+                btnDelete.id = "xmark";
 
-            const btnEdit = document.createElement("button");
-            btnEdit.textContent = "";
-            btnEdit.onclick = () => editItem(item);
-            btnEdit.className = "fas fa-edit";
+                const btnEdit = document.createElement("button");
+                btnEdit.textContent = "";
+                btnEdit.onclick = () => editItem(item);
+                btnEdit.className = "fas fa-edit";
 
-            const btnCheck = document.createElement("button");
-            btnCheck.textContent = "";
-            btnCheck.onclick = () => checkItem(item.Id, item.Wykreslone);
-            btnCheck.className = "fas fa-check";
+                const btnCheck = document.createElement("button");
+                btnCheck.textContent = "";
+                btnCheck.onclick = () => checkItem(item.Id, item.Wykreslone);
+                btnCheck.className = "fas fa-check";
 
-            const actionsSpan = document.createElement("span");
-            actionsSpan.className = "actions";
-            actionsSpan.appendChild(btnCheck);
-            actionsSpan.appendChild(btnEdit);
-            actionsSpan.appendChild(btnDelete);
+                const actionsSpan = document.createElement("span");
+                actionsSpan.className = "actions";
+                actionsSpan.appendChild(btnCheck);
+                actionsSpan.appendChild(btnEdit);
+                actionsSpan.appendChild(btnDelete);
 
-            li.appendChild(textSpan);
-            li.appendChild(actionsSpan);
-            list.appendChild(li);
+                li.appendChild(textSpan);
+                li.appendChild(actionsSpan);
+                categoryList.appendChild(li);
+            });
+            
+            categoryDiv.appendChild(categoryList);
+            container.appendChild(categoryDiv);
         });
         
         updateRoundedCorners();
@@ -48,31 +95,34 @@ function loadItems(){
 }
 
 function updateRoundedCorners() {
-    const allItems = document.querySelectorAll('.task-item');
-    const uncheckedItems = document.querySelectorAll('.task-item:not(.checked)');
+    const categoryLists = document.querySelectorAll('.category-list');
     
-    allItems.forEach(item => {
-        item.classList.remove('first-unchecked', 'last-unchecked', 'before-last-unchecked', 'after-first-unchecked');
+    categoryLists.forEach(list => {
+        const allItems = list.querySelectorAll('.task-item');
+        const uncheckedItems = list.querySelectorAll('.task-item:not(.checked)');
+        
+        allItems.forEach(item => {
+            item.classList.remove('first-unchecked', 'last-unchecked', 'before-last-unchecked', 'after-first-unchecked');
+        });
+        
+        if (uncheckedItems.length > 0) {
+            const firstUnchecked = uncheckedItems[0];
+            firstUnchecked.classList.add('first-unchecked');
+            
+            const lastUnchecked = uncheckedItems[uncheckedItems.length - 1];
+            lastUnchecked.classList.add('last-unchecked');
+            
+            const beforeLastUnchecked = lastUnchecked.previousElementSibling;
+            if (beforeLastUnchecked && beforeLastUnchecked.classList.contains('checked')) {
+                beforeLastUnchecked.classList.add('before-last-unchecked');
+            }
+            
+            const afterFirstUnchecked = firstUnchecked.nextElementSibling;
+            if (afterFirstUnchecked && afterFirstUnchecked.classList.contains('checked')) {
+                afterFirstUnchecked.classList.add('after-first-unchecked');
+            }
+        }
     });
-    
-    if (uncheckedItems.length > 0) {
-        const firstUnchecked = uncheckedItems[0];
-        firstUnchecked.classList.add('first-unchecked');
-        
-        // Ostatni nieskreślony element
-        const lastUnchecked = uncheckedItems[uncheckedItems.length - 1];
-        lastUnchecked.classList.add('last-unchecked');
-        
-        const beforeLastUnchecked = lastUnchecked.previousElementSibling;
-        if (beforeLastUnchecked && beforeLastUnchecked.classList.contains('checked')) {
-            beforeLastUnchecked.classList.add('before-last-unchecked');
-        }
-        
-        const afterFirstUnchecked = firstUnchecked.nextElementSibling;
-        if (afterFirstUnchecked && afterFirstUnchecked.classList.contains('checked')) {
-            afterFirstUnchecked.classList.add('after-first-unchecked');
-        }
-    }
 }
 
 function addItem() {
@@ -81,7 +131,6 @@ function addItem() {
     const itemName = input.value.trim();
     if (!itemName) return;
 
-    // Pobierz wybraną kategorię
     const selectedOption = select.querySelector('option.active') || select.querySelector('option:checked');
     const kategoria = selectedOption ? selectedOption.value : 'Inne';
 
@@ -91,11 +140,6 @@ function addItem() {
         body: `action=add&item=${encodeURIComponent(itemName)}&kategoria=${encodeURIComponent(kategoria)}`
     }).then(() => {
         input.value = '';
-        // Wyczyść zaznaczenie w select
-        select.querySelectorAll('option').forEach(option => {
-            option.selected = false;
-            option.classList.remove('active');
-        });
         loadItems();
     });
 }
@@ -248,30 +292,25 @@ function initializeSelect() {
     const input = document.getElementById('item');
     
     if (select && input) {
-        // Automatycznie zaznacz pierwszy element przy inicjalizacji
         const firstOption = select.querySelector('option:first-child');
         if (firstOption) {
             firstOption.classList.add('active');
             firstOption.selected = true;
         }
         
-        // Obsługa kliknięć w opcje selecta
         select.addEventListener('mousedown', function(e) {
             if (e.target.tagName === 'OPTION') {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // Usuń klasę active ze wszystkich opcji
                 for (let option of select.options) {
                     option.selected = false;
                     option.classList.remove('active');
                 }
                 
-                // Zaznacz tylko klikniętą opcję
                 e.target.selected = true;
                 e.target.classList.add('active');
                 
-                // Utrzymaj focus na input i select otwartym
                 setTimeout(() => {
                     input.focus();
                     select.style.display = 'block';
@@ -283,20 +322,17 @@ function initializeSelect() {
             }
         });
         
-        // Zapobiegaj zamykaniu selecta przy kliknięciu
         select.addEventListener('click', function(e) {
             e.stopPropagation();
             e.preventDefault();
         });
         
-        // Pokaż select gdy input otrzyma focus
         input.addEventListener('focus', function() {
             select.style.display = 'block';
             select.style.opacity = '1';
             select.style.transform = 'translateY(0)';
         });
         
-        // Ukryj select przy kliknięciu poza kontenerem
         document.addEventListener('click', function(e) {
             const container = input.parentElement;
             if (container && !container.contains(e.target)) {
@@ -307,7 +343,6 @@ function initializeSelect() {
             }
         });
         
-        // Ukryj select przy naciśnięciu Escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 select.style.display = 'none';
